@@ -44,7 +44,7 @@ require("dotenv").config();
         saveUninitialized: false,
         cookie: {
           masAge: parseInt(process.env.SESS_LIFETIME),
-          sameSite: false,
+          sameSite: true,
           secure: false
         }
       })
