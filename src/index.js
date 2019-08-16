@@ -16,7 +16,6 @@ const PATH = "/graphql";
 
 require("dotenv").config();
 
-
 (async () => {
   try {
     await mongoose.connect(
