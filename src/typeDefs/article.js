@@ -23,7 +23,7 @@ export default gql`
 
   type ArticleType {
     id: ID!
-    createdAt: String
+    createdAt: String!
     Title: String!
     Content: String!
     Status: Boolean!
