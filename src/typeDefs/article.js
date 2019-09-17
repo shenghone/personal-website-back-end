@@ -2,8 +2,8 @@ import { gql } from "apollo-server-express";
 
 export default gql`
   extend type Query {
-    Articles: [ArticleType!]! @auth
-    Article(id: ID!): ArticleType @auth
+    Articles: [ArticleType!]!
+    Article(id: ID!): ArticleType
   }
 
   extend type Mutation {
@@ -23,8 +23,7 @@ export default gql`
 
   type ArticleType {
     id: ID!
-    createdAt: String!
-    updatedAt: String!
+    createdAt: String
     Title: String!
     Content: String!
     Status: Boolean!

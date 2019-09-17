@@ -3,7 +3,7 @@ import { UserInputError } from "apollo-server-express";
 import { attemptSignIn, signOut } from "../auth";
 export default {
   Query: {
-    Me: (parent, args, {req}, info) => {
+    Me: async (parent, args, {req}, info) => {
       return Author.findById(req.session.authorId);
     }
   },
