@@ -5,7 +5,9 @@ import typeDefs from "./typeDefs";
 import resolvers from "./resolvers";
 import schemaDirectives from "./directives";
 import session from "express-session";
-import connectRedis from "connect-redis";
+import cors from "cors";
+
+const MongoStore = require('connect-mongodb-session')(session)
 
 //to disable the depreciate warning as mongoose documentation suggests
 mongoose.set("useFindAndModify", false);
@@ -19,19 +21,20 @@ require("dotenv").config();
 (async () => {
   try {
     await mongoose.connect(
-      `mongodb://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@${
-        process.env.DB_HOST
-      }:${process.env.DB_PORT}/${process.env.DB_NAME}`,
-      { useNewUrlParser: true }
-    );
+       `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@${
+         process.env.DB_HOST
+       }/${process.env.DB_NAME}?retryWrites=true&w=majority`,
+       { useNewUrlParser: true }
+     );
 
     app.disable("x-powered-by");
-    const RedisStore = connectRedis(session);
-    const store = new RedisStore({
-      host: process.env.REDIS_HOST,
-      port: process.env.REDIS_PORT,
-      pass: process.env.REDIS_PASSWORD
-    });
+ 
+    const store = new MongoStore({
+      uri: `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@${
+        process.env.DB_HOST}`,
+      databaseName: process.env.DB_NAME,
+      collection: 'sessions',
+  })
 
     app.use(
       session({
@@ -43,8 +46,8 @@ require("dotenv").config();
         saveUninitialized: false,
         cookie: {
           masAge: parseInt(process.env.SESS_LIFETIME),
-          sameSite: true,
-          secure: false
+          sameSite: "none",
+          secure: true
         }
       })
     );
@@ -53,7 +56,7 @@ require("dotenv").config();
       origin: `${process.env.FRONT_END_URL}`,
       credentials: true
     };
-
+    app.use(cors(corsOptions));
     const server = new ApolloServer({
       typeDefs,
       resolvers,
@@ -65,7 +68,7 @@ require("dotenv").config();
 
     server.applyMiddleware({
       app,
-      cors: corsOptions
+      cors: false
     });
 
     app.listen(PORT, () => {

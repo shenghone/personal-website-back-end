@@ -23,6 +23,9 @@ export const ensureSignIn = req => {
 };
 
 export const ensureSignOut = req => {
+  console.log("line 26");
+  console.log(req.session);
+  console.log(req.Session)
   if (req.session.authorId) {
     throw new AuthenticationError("You are already signed in.");
   }

@@ -22,13 +22,10 @@ export default {
     },
     SignIn: async (parent, args, { req, res }, info) => {
       //compare user inputs against the data in database
-
       const author = await attemptSignIn(args.Email, args.Password);
       if(author && author.id){
         req.session.authorId = author.id;
       }
-      console.log(req.session.authorId)
-
       return author;
     },
     SignOut: (parent, args, { req, res }, info) => {
